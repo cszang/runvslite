@@ -4,6 +4,12 @@ if (!require(VSLiteR)) {
 if (!require(DEoptim)) {
   install.packages("DEoptim")
 }
+if (!require(dplyr)) {
+  install.packages("dplyr")
+}
+if (!require(magrittr)) {
+  install.packages("magrittr")
+}
 
 matlab_month_format <- function(.climate, .var) {
   ..climate <- .climate %>% dplyr::select(year, month, !!.var)
