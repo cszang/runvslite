@@ -21,7 +21,8 @@ make_vsinput_historic <- function(.rwl, .climate) {
   nvars <- length(vars)
   .chron <- .rwl %>%
     detrend(method = "Spline", nyrs = 32) %>% 
-    chron()
+    chron() %>% 
+    na.omit()
   .chron <- data.frame(
     year = as.numeric(rownames(.chron)),
     rwi = .chron$xxxstd
