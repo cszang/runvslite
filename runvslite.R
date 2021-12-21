@@ -68,8 +68,8 @@ vs_params <- function(trw, .temp, .prec, .syear, .eyear, .phi, iter = 200) {
     if (is.na(corr)) corr <- Inf
     corr
   }
-  lower <- c(2, 15, 0.001, 0.005)
-  upper <- c(15, 35, 0.1, 0.5)
+  lower <- c(0, 9, 0.01, 0.1)
+  upper <- c(8.5, 20, 0.03, 0.5)
   opti <- DEoptim(diffcor_optim, lower, upper,
                   control = DEoptim.control(itermax = iter))
   out <- opti$optim$bestmem
