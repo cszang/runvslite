@@ -16,7 +16,7 @@ matlab_month_format <- function(.climate, .var) {
   t(as.matrix(tidyr::spread(..climate, month, !!.var) %>% dplyr::select(-year)))
 }
 
-make_vsinput_historic <- function(.rwl, .climate) {
+make_vsinput_historic <- function(.rwl, .climate, restrict = NULL) {
   vars <- names(.climate)[!names(.climate) %in% c("year", "month")]
   nvars <- length(vars)
   .chron <- .rwl %>%
@@ -30,7 +30,15 @@ make_vsinput_historic <- function(.rwl, .climate) {
   tree_years <- .chron$year
   climate_years <- unique(.climate$year)
   common_years <- inner_join(data.frame(year = tree_years),
-                             data.frame(year = climate_years)) %>% .$year
+                               data.frame(year = climate_years)) %>% .$year
+  if (!is.null(restrict)) {
+    restrict_years <- min(restrict):max(restrict)
+    if (all(restrict_years %in% common_years)) {
+      common_years <- restrict_years  
+    } else {
+      stop("Please specify `restrict` as integer vector of length 2 giving range of years for calibration.")
+    }
+  }
   .chron <- .chron %>% filter(year %in% common_years)
   .climate <- .climate %>% filter(year %in% common_years)
   out <- list()
