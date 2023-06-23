@@ -25,7 +25,7 @@ make_vsinput_historic <- function(.rwl, .climate, restrict = NULL) {
     na.omit()
   .chron <- data.frame(
     year = as.numeric(rownames(.chron)),
-    rwi = .chron$xxxstd
+    rwi = .chron$std
   )
   tree_years <- .chron$year
   climate_years <- unique(.climate$year)
