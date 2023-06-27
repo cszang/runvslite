@@ -53,6 +53,38 @@ make_vsinput_historic <- function(.rwl, .climate, restrict = NULL) {
   out
 }
 
+
+# for individual, ready-to use series, assumes data.frame with year and rwi
+make_vsinput_historic_indiv <- function(.rwi, .climate, restrict = NULL) {
+  vars <- names(.climate)[!names(.climate) %in% c("year", "month")]
+  nvars <- length(vars)
+  .chron <- .rwi
+  tree_years <- .chron$year
+  climate_years <- unique(.climate$year)
+  common_years <- inner_join(data.frame(year = tree_years),
+                             data.frame(year = climate_years)) %>% .$year
+  if (!is.null(restrict)) {
+    restrict_years <- min(restrict):max(restrict)
+    if (all(restrict_years %in% common_years)) {
+      common_years <- restrict_years  
+    } else {
+      stop("Please specify `restrict` as integer vector of length 2 giving range of years for calibration.")
+    }
+  }
+  .chron <- .chron %>% filter(year %in% common_years)
+  .climate <- .climate %>% filter(year %in% common_years)
+  out <- list()
+  out$trw <- .chron$rwi
+  out$syear <- min(common_years)
+  out$eyear <- max(common_years)
+  for (i in 1:nvars) {
+    .var <- vars[i]
+    clim_var <- matlab_month_format(.climate, .var)
+    out[[.var]] <- clim_var
+  }
+  out
+}
+
 make_vsinput_transient <- function(.climate) {
   vars <- names(.climate)[!names(.climate) %in% c("year", "month", "rcp")]
   nvars <- length(vars)
